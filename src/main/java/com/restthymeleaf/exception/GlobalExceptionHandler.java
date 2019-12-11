@@ -17,10 +17,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(ResourceAlredyReportedException.class)
-	public ResponseEntity<?> ResourceAlredyReportedException(ResourceAlredyReportedException ex, WebRequest request) {
+	@ExceptionHandler(BadRequestException.class)
+	public ResponseEntity<?> ResourceAlredyReportedException(BadRequestException ex, WebRequest request) {
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
-		return new ResponseEntity<>(errorDetails, HttpStatus.IM_USED);
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)

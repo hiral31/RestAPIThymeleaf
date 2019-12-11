@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.restthymeleaf.exception.ResourceAlredyReportedException;
+import com.restthymeleaf.exception.BadRequestException;
 import com.restthymeleaf.exception.ResourceNotFoundException;
 import com.restthymeleaf.model.Message;
 import com.restthymeleaf.repository.MessageRepository;
@@ -26,40 +26,39 @@ public class MessageService {
 	}
 
 	// Add message which are passed by client
-	public Message addMessage(Message messageDetail) throws ResourceAlredyReportedException {
+	public Message addMessage(Message messageDetail) throws ResourceNotFoundException {
 		Message message = messageRepository.findByMessage(messageDetail.getMessageDetail());
 		if (message == null) {
 			return messageRepository.save(messageDetail);
 		}
-		throw new ResourceAlredyReportedException("Message alredy Added " + messageDetail.getMessageDetail());
+		throw new ResourceNotFoundException("Message alredy Added " + messageDetail.getMessageDetail());
 	}
 
 	// Update Message using messageDetail
-	public Message updateMessage(Message messageDetails, String messageDetail) throws ResourceNotFoundException {
-		Message message = messageRepository.findByMessage(messageDetail);
-		if (message == null) {
-			throw new ResourceNotFoundException("Message not found :" + messageDetail);
+	public Message updateMessage(Message messageDetails, long messageId) throws ResourceNotFoundException, BadRequestException {
+		Optional<Message> message = messageRepository.findById(messageId);
+		if (!message.isPresent()) {
+			throw new ResourceNotFoundException("Message not found :" + messageId);
 		}
 
 		if (messageRepository.findByMessage(messageDetails.getMessageDetail()) != null) {
-			throw new ResourceNotFoundException("Message alredy added :" + messageDetail);
+			throw new BadRequestException("Message alredy added :" + messageDetails.getMessageDetail());
 		}
 
-		message.setMessageDetail(messageDetails.getMessageDetail());
-
-		Message updatedMessage = messageRepository.save(message);
+		message.get().setMessageDetail(messageDetails.getMessageDetail());
+		Message updatedMessage = messageRepository.save(message.get());
 
 		return updatedMessage;
 
 	}
 
 	// Delete Message by MessageDetail
-	public void deleteMessage(String messageDetail) throws ResourceNotFoundException {
-		Message message = messageRepository.findByMessage(messageDetail);
-		if (message == null) {
-			throw new ResourceNotFoundException("Message not found :" + messageDetail);
+	public void deleteMessage(long messageId) throws ResourceNotFoundException {
+		Optional<Message> message = messageRepository.findById(messageId);
+		if (!message.isPresent()) {
+			throw new ResourceNotFoundException("Message not found :" + messageId);
 		}
-		messageRepository.delete(message);
+		messageRepository.delete(message.get());
 	}
 
 	// Find the Message based on messageDetail

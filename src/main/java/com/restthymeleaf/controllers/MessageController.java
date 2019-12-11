@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restthymeleaf.exception.ResourceAlredyReportedException;
+import com.restthymeleaf.exception.BadRequestException;
 import com.restthymeleaf.exception.ResourceNotFoundException;
 import com.restthymeleaf.model.Message;
 import com.restthymeleaf.service.MessageService;
@@ -37,7 +37,7 @@ public class MessageController {
 	// Create Message method by passing Message model and in return get Message
 	// model if Message created successfully.
 	@PostMapping("/messages")
-	public Message addMessage(@Valid @RequestBody Message messageDetail) throws ResourceAlredyReportedException {
+	public Message addMessage(@Valid @RequestBody Message messageDetail) throws ResourceNotFoundException {
 		return messageService.addMessage(messageDetail);
 
 	}
@@ -45,8 +45,8 @@ public class MessageController {
 	// Update Message Method by passing Message model and message which you want to
 	// change and in return get Message model if Message updated successfully.
 	@PutMapping("/messages/{id}")
-	public ResponseEntity<Message> updateMessage(@PathVariable(value = "id") String messageId,
-			@Valid @RequestBody Message messageDetails) throws ResourceNotFoundException {
+	public ResponseEntity<Message> updateMessage(@PathVariable(value = "id") long messageId,
+			@Valid @RequestBody Message messageDetails) throws ResourceNotFoundException, BadRequestException {
 		final Message updatedmessage = messageService.updateMessage(messageDetails, messageId);
 		return ResponseEntity.ok(updatedmessage);
 	}
@@ -54,7 +54,7 @@ public class MessageController {
 	// Delete Message Method by passing message which you want to delete and in
 	// return get true if Message deleted successfully.
 	@DeleteMapping("/messages/{id}")
-	public Map<String, Boolean> deleteMessage(@PathVariable(value = "id") String messageId)
+	public Map<String, Boolean> deleteMessage(@PathVariable(value = "id") long messageId)
 			throws ResourceNotFoundException {
 		messageService.deleteMessage(messageId);
 		Map<String, Boolean> response = new HashMap<>();

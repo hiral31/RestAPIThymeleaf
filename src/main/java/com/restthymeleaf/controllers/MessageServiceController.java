@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.restthymeleaf.exception.ResourceAlredyReportedException;
+import com.restthymeleaf.exception.BadRequestException;
 import com.restthymeleaf.exception.ResourceNotFoundException;
 import com.restthymeleaf.model.Message;
 import com.restthymeleaf.service.MessageService;
@@ -53,7 +53,7 @@ public class MessageServiceController {
 		}
 		try {
 			messageService.addMessage(message);
-		} catch (ResourceAlredyReportedException e) {
+		} catch (ResourceNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -79,8 +79,11 @@ public class MessageServiceController {
 		}
 
 		try {
-			messageService.updateMessage(message, messageService.findById(id).get().getMessageDetail());
+			messageService.updateMessage(message, id);
 		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadRequestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -94,7 +97,7 @@ public class MessageServiceController {
 		Message message = messageService.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid message Id:" + id));
 		try {
-			messageService.deleteMessage(message.getMessageDetail());
+			messageService.deleteMessage(id);
 		} catch (ResourceNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
