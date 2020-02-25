@@ -25,12 +25,8 @@ import com.restthymeleaf.service.MessageService;
 @RequestMapping("/messages/")
 public class MessageServiceController {
 
-	private final MessageService messageService;
-
 	@Autowired
-	public MessageServiceController(MessageService messageService) {
-		this.messageService = messageService;
-	}
+	MessageService messageService;
 
 	// Landing page call for starting the application
 	@GetMapping("signup")
@@ -53,7 +49,7 @@ public class MessageServiceController {
 		}
 		try {
 			messageService.addMessage(message);
-		} catch (ResourceNotFoundException e) {
+		} catch (BadRequestException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

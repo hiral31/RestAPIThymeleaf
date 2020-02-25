@@ -1,5 +1,6 @@
 package com.restthymeleaf.controllers;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.restthymeleaf.exception.BadRequestException;
 import com.restthymeleaf.exception.ResourceNotFoundException;
@@ -37,9 +39,13 @@ public class MessageController {
 	// Create Message method by passing Message model and in return get Message
 	// model if Message created successfully.
 	@PostMapping("/messages")
-	public Message addMessage(@Valid @RequestBody Message messageDetail) throws ResourceNotFoundException {
-		return messageService.addMessage(messageDetail);
-
+	public ResponseEntity<Object> addMessage(@Valid @RequestBody Message messageDetail) throws BadRequestException {
+		Message message= messageService.addMessage(messageDetail);
+		
+		URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(message.getId()).toUri();
+		
+		
+		return ResponseEntity.created(location).build();
 	}
 
 	// Update Message Method by passing Message model and message which you want to

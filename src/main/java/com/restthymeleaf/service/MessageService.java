@@ -26,12 +26,12 @@ public class MessageService {
 	}
 
 	// Add message which are passed by client
-	public Message addMessage(Message messageDetail) throws ResourceNotFoundException {
+	public Message addMessage(Message messageDetail) throws  BadRequestException {
 		Message message = messageRepository.findByMessage(messageDetail.getMessageDetail());
 		if (message == null) {
 			return messageRepository.save(messageDetail);
 		}
-		throw new ResourceNotFoundException("Message alredy Added " + messageDetail.getMessageDetail());
+		throw new BadRequestException("Message alredy Added " + messageDetail.getMessageDetail());
 	}
 
 	// Update Message using messageDetail

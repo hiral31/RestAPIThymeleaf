@@ -39,7 +39,7 @@ Content-Type: application/json
 You can edit message by posting payloads like below:
 
 ```
-PUT 127.0.0.1:8080/messages/hi
+PUT 127.0.0.1:8080/messages/1
 Content-Type: application/json
 {
   	"messageDetail":"hello"
@@ -49,7 +49,7 @@ Content-Type: application/json
 You can delete message by posting payloads like below:
 
 ```
-DELETE 127.0.0.1:8080/messages/hello
+DELETE 127.0.0.1:8080/messages/1
 
 ```
 
